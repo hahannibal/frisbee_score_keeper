@@ -11,14 +11,18 @@ import datetime
 class MenuScreen(Screen):
     pass
 
+
 class ScoreScreen(Screen):
     pass
+
 
 class StartPopup(Popup):
     localtime = datetime.datetime.now()
 
+
 class EndPopup(Popup):
     pass
+
 
 class sm(ScreenManager):
     menu_screen = ObjectProperty(None)
@@ -46,8 +50,6 @@ class sm(ScreenManager):
         if "<Worksheet" in word:
             wsl.remove(word)
 
-
-
     stat_sheet = client.open('Statistics')
     ss_sheet = stat_sheet.worksheet('Dummy')
     new_sheet = ""
@@ -55,15 +57,8 @@ class sm(ScreenManager):
     def spinner_clicked(self, wsl):
         pass
 
-    def checkbox_fb_clicked(self, instance, value):
-        if value is True:
-            print("Ide jön az fb postolás")
-        else:
-            print("Nem történik semmi")
-
     t1p = ObjectProperty(True)
     t2p = ObjectProperty(False)
-
 
     def start_button(object):
         start_button = StartPopup()
@@ -72,6 +67,7 @@ class sm(ScreenManager):
     def end_button(object):
         end_button = EndPopup()
         end_button.open()
+
 
 Builder.load_string("""
 <sm>:
@@ -132,17 +128,6 @@ Builder.load_string("""
                     size_hint_y: .25
                     on_press: pull_label_id.text = "Pulling team:" + spinner2_id.text
 
-#facebook posting question, code needed!
-            BoxLayout:
-                orientation: "horizontal"
-                size_hint_y: .25
-                Label:
-                    text: "Would you like automatic FB posts?"
-                    size_hint_x: .8
-                CheckBox:
-                    on_active: root.checkbox_fb_clicked(self, self.active)
-                    size_hint_x: .2
-                    
 # start and end button
             BoxLayout:
                 orientation: "horizontal"
@@ -151,12 +136,12 @@ Builder.load_string("""
                     text: "Ready"
                     on_press: root.worksheet = root.stat_sheet.add_worksheet(title=str(root.localtime.year) + "_"\
                      + str(root.localtime.month) + "_" + str(root.localtime.day) + "_" + str(root.localtime.hour)\
-                     + str(root.localtime.second) +"_" + spinner1_id.text + "_vs_" + spinner2_id.text, rows ="100",\
+                     + "_" +str(root.localtime.minute) + str(root.localtime.second) +"_" + spinner1_id.text + "_vs_"\
+                      + spinner2_id.text, rows ="100",\
                       cols= "20")
-                    on_press: root.new_sheet = str(root.localtime.year) + "_" + str(root.localtime.month) + "_" + \
-                    str(root.localtime.day) + "_" + str(root.localtime.hour)+ str(root.localtime.second) + "_" + \
-                    spinner1_id.text + "_vs_"\
-                     + spinner2_id.text
+                    on_press: root.new_sheet = str(root.localtime.year) + "_" + str(root.localtime.month) + "_" \
+                    + str(root.localtime.day) + "_" + str(root.localtime.hour) + "_" +str(root.localtime.minute) +\
+                     str(root.localtime.second) +"_" + spinner1_id.text + "_vs_" + spinner2_id.text
                     on_press: goal_1_id.values = root.ts1.col_values(1)
                     on_press: assist_1_id.values = root.ts1.col_values(1)
                     on_press: goal_2_id.values = root.ts2.col_values(1)
@@ -164,11 +149,11 @@ Builder.load_string("""
                     on_release: app.root.start_button()
                     on_release: root.current = "score_screen"
 
-                
+
                 Button:
                     text: "Exit"
                     on_press: app.stop()
-                    
+
     ScoreScreen:
         name: "score_screen"
         BoxLayout:
@@ -190,7 +175,7 @@ Builder.load_string("""
                 Label:
                     text: spinner2_id.text
                     size_hint_x: .25
-            
+
             BoxLayout:
                 orientation: "horizontal"
                 size_hint_y: .5
@@ -204,10 +189,10 @@ Builder.load_string("""
                     text: "0"
 
 #player spinners
-            
+
             BoxLayout:
                 orientation: "horizontal"
-            
+
                 BoxLayout:
                     orientation: "horizontal"
                     BoxLayout:
@@ -219,8 +204,8 @@ Builder.load_string("""
                             values: ["1"]
                             id: goal_1_id
                             on_text: root.spinner_clicked(goal_1_id.text)
-                           
-                    
+
+
                     BoxLayout:
                         orientation: "vertical"
                         Label:
@@ -230,8 +215,8 @@ Builder.load_string("""
                             values: ["1"]
                             id: assist_1_id
                             on_text: root.spinner_clicked(assist_1_id.text)
-              
-                    
+
+
                 BoxLayout:
                     orientation: "horizontal"
                     BoxLayout:
@@ -243,7 +228,7 @@ Builder.load_string("""
                             values: ["1"]
                             id: goal_2_id
                             on_text: root.spinner_clicked(goal_2_id.text)
-                                                
+
                     BoxLayout:
                         orientation: "vertical"
                         Label:
@@ -253,9 +238,9 @@ Builder.load_string("""
                             values: ["1"]
                             id: assist_2_id
                             on_text: root.spinner_clicked(assist_2_id.text)
-            
+
 # score plus buttons            
-            
+
             BoxLayout:
                 orientation: "horizontal"
                 size_hint_y: .5
@@ -280,7 +265,7 @@ Builder.load_string("""
 
 
 #on_press: plusz 1 pont, facebook post, label update 
-            
+
             BoxLayout:
                 orientation: "horizontal"
                 BoxLayout:
@@ -304,7 +289,7 @@ Builder.load_string("""
                     on_release: app.root.end_button()
                     on_release: root.current = "menu_screen"
                     #pop up: Next Match | Exit                   
-                    
+
 <StartPopup>:
     name: "popup"
     size_hint: .5, .5
@@ -332,15 +317,16 @@ Builder.load_string("""
         Button:
             text: "Stop Application"
             on_press: app.stop()            
-        
-     
+
+
 """)
 
 
-class TestApp(App):
+class Frisbee_SK(App):
 
     def build(self):
         return sm()
 
+
 if __name__ == '__main__':
-    TestApp().run()
+    Frisbee_SK().run()
